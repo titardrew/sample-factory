@@ -21,6 +21,7 @@ from sf_examples.vizdoom.doom.action_space import (
     doom_action_space_full_discretized,
     doom_turn_and_attack_only,
 )
+from sf_examples.vizdoom.doom.doom_data_collection import OfflineVizDoomGymnasiumWrapper
 from sf_examples.vizdoom.doom.doom_gym import VizdoomEnv
 from sf_examples.vizdoom.doom.wrappers.additional_input import DoomAdditionalInput
 from sf_examples.vizdoom.doom.wrappers.multiplayer_stats import MultiplayerStatsWrapper
@@ -315,6 +316,10 @@ def make_doom_env_impl(
 
     if doom_spec.reward_scaling != 1.0:
         env = RewardScalingWrapper(env, doom_spec.reward_scaling)
+    
+    if "collect_data_offline" in cfg and cfg.collect_data_offline:
+        dataset_path = os.path.join(cfg.train_dir, "dataset.h5df")
+        env = OfflineVizDoomGymnasiumWrapper(env, dataset_path)
 
     return env
 
